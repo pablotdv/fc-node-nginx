@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  
+  db:
+    image: mysql:8.0.30
+    container_name: desafio-nn-db
+    volumes:
+      - "./data/mysql:/var/lib/mysql"
+      - ./mysql:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=desafio-nn
+    networks: 
+      - desafio-nn
+  
+  app:
+    build:
+      context: node/
+    container_name: desafio-nn-app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s node index.js
+    image: pablotdvsm/desafio-nn-app:1.0.0-dev
+    networks: 
+      - desafio-nn
+    volumes:
+      - "./node:/app"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  nginx:
+    build:
+      context: nginx/
+    container_name: desafio-nn-nginx
+    image: pablotdvsm/desafio-nn-nginx:1.0.0-dev
+    networks: 
+      - desafio-nn
+    volumes:
+      - "./node:/app"
+    ports:
+      - "8080:80"
+    depends_on:
+      - app
+
+
+networks: 
+  desafio-nn:
+    driver: bridge    

@@ -1,2 +1,7 @@
-docker compose -f docker-compose-dev.yaml down
-docker compose -f docker-compose-dev.yaml up --build -d
+### Rodar a aplicação
+
+`docker compose --build -d`
+
+### Parar a aplicação
+
+`docker compose down`

@@ -16,14 +16,13 @@ services:
   
   app:
     build:
-      context: node/
+      context: ./node
+      dockerfile: Dockerfile.prd
     container_name: desafio-nn-app
     entrypoint: dockerize -wait tcp://db:3306 -timeout 20s node index.js
     image: pablotdvsm/desafio-nn-app:1.0.0-dev
     networks: 
       - desafio-nn
-    volumes:
-      - "./node:/app"
     ports:
       - "3000:3000"
     depends_on:
